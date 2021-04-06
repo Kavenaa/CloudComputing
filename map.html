@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Earthquake Markers</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <style type="text/css">
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+
+      /* Optional: Makes the sample page fill the window. */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script>
+      
+      let map;
+
+    const jsonLtdLng = "https://opendata.arcgis.com/datasets/18252922bc854bf198f9cd5a8702bdc3_19.geojson";
+    var lat;
+    var lon;
+
+    async function getISS() {
+        const resp = await fetch(jsonLtdLng)
+        const data = await resp.json();
+            for (let i = 0; i < data.features.length; i++) {
+           // $.getJSON(jsonLtdLng, function (results) {
+           //     var lat = results[i].geometry.coordinates[1];
+           //     var lon = results[i].geometry.coordinates[0];
+           // });
+        lat = data.features[i].geometry.coordinates[1];
+        lon = data.features[i].geometry.coordinates[0];
+        name = data.features[i].properties.NAME;
+        const latLng = new google.maps.LatLng(lat, lon);
+          new google.maps.Marker({
+            position: latLng,
+            title: name,
+            map: map,
+          });
+        }
+      };
+      //  initMap();
+
+    
+      
+    getISS();
+
+      function initMap() {
+          
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 8,
+          center: new google.maps.LatLng(43.873984644762466, -78.92876125838896),
+          mapTypeId: "terrain",
+        });
+        // Create a <script> tag and set the USGS URL as the source.
+        const script = document.createElement("script");
+        // This example uses a local copy of the GeoJSON stored at
+        // http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojsonp
+       // script.src = "myMap.js";
+        document.getElementsByTagName("head")[0].appendChild(script);
+      }
+
+
+
+      
+    </script>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5Ibcb2PTtNPOZmNrVec89jNHlyUCTiIc&callback=initMap&libraries=&v=weekly";
+    ></script>
+  </body>
+</html>
