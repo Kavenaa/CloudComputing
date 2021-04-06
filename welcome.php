@@ -236,7 +236,7 @@ caption {
               To: email,
               From: "testingccp425@gmail.com",
               Subject:"Train ticket Confirmation - " + name,
-              Body: "Name: " + name + ". You purchased: " + document.getElementById("daily_free").value,
+              Body: "Name: " + name + ". You purchased a ticket.",
           }).then(
             message => alert("Mail sent successful")
           );
