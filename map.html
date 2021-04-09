@@ -36,11 +36,13 @@
            // });
         lat = data.features[i].geometry.coordinates[1];
         lon = data.features[i].geometry.coordinates[0];
-        name = data.features[i].properties.NAME;
+        name = data.features[i].properties.ABBREVIATI;
+        id = data.features[i].properties.NAME;
+        status = data.features[i].properties.STATUS;
         const latLng = new google.maps.LatLng(lat, lon);
           new google.maps.Marker({
             position: latLng,
-            title: name,
+            title: "Stop #: " + name + ", " + id + ". Status: " + status,
             map: map,
           });
         }
