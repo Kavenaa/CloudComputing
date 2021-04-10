@@ -1,56 +1,49 @@
 <?php
-// Include config file
 $servername = "aa1j2ay19mvo8dl.cew1fvzp06l6.us-east-2.rds.amazonaws.com";
 $username = "cap";
 $password = "capstonedb";
 
+//database connection
 try {
   $conn = new PDO("mysql:host=$servername;dbname=ebdb", $username, $password);
   // set the PDO error mode to exception
   $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
- // echo "Connected successfully";
   }catch(PDOException $e) {
   echo "Connection failed: " . $e->getMessage();
 }
  
-// Define variables and initialize with empty values
 $name = $upassword = $confirm_password = $email = "";
 $name_err = $upassword_err = $confirm_password_err = $email_err = "";
  
-// Processing form data when form is submitted
+//Does on form submission
 if($_SERVER["REQUEST_METHOD"] == "POST"){
  
-    // Validate username
+    //Check username
     if(empty(trim($_POST["name"]))){
         $name_err = "Please enter a username.";
     } else{
-        // Prepare a select statement
+        // SQL statement
         $sql = "SELECT idusers FROM test WHERE name = :name";
         
         if($stmt = $conn->prepare($sql)){
-            // Bind variables to the prepared statement as parameters
             $stmt->bindParam(":name", $param_name, PDO::PARAM_STR);
-            
-            // Set parameters
+           
             $param_name = trim($_POST["name"]);
             
-            // Attempt to execute the prepared statement
             if($stmt->execute()){
                 if($stmt->rowCount() == 1){
-                    $name_err = "This username is already taken.";
+                    $name_err = "Username in use. Please choose another.";
                 } else{
                     $name = trim($_POST["name"]);
                 }
             } else{
-                echo "Oops! Something went wrong. Please try again later.";
+                echo "We must be having problems. Please try again later.";
             }
-
-            // Close statement
             unset($stmt);
         }
     }
     
-    // Validate password
+    // Password Validation
     if(empty(trim($_POST["upassword"]))){
         $upassword_err = "Please enter a password.";     
     } elseif(strlen(trim($_POST["upassword"])) < 6){
@@ -59,7 +52,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $upassword = trim($_POST["upassword"]);
     }
     
-    // Validate confirm password
+    // Confirm the password
     if(empty(trim($_POST["confirm_password"]))){
         $confirm_password_err = "Please confirm password.";     
     } else{
@@ -68,40 +61,38 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $confirm_password_err = "Password did not match.";
         }
     }
+    //email validation
     if (empty($_POST["email"])) {
     $email_err = "Email is required";
   } else {
     $email = trim($_POST["email"]);
-    // check if e-mail address is well-formed
+    // check if email has @ and .
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
       $email_err = "Invalid email format";
     }
   }
     
-    // Check input errors before inserting in database
+    // If no errors, insert data into database
     if(empty($name_err) && empty($upassword_err) && empty($confirm_password_err) && empty($email_err)){
         
-        // Prepare an insert statement
+        // SQL statement
         $stmt = $conn->prepare("INSERT INTO test (name, email, upassword) VALUES (:name, :email, :upassword)");
-            // Bind variables to the prepared statement as parameters
             $stmt->bindParam(":name", $param_name, PDO::PARAM_STR);
             $stmt->bindParam(":email", $param_email, PDO::PARAM_STR);
             $stmt->bindParam(":upassword", $param_password, PDO::PARAM_STR);
             
-            // Set parameters
+            // Set params to the variables from the form
             $param_name = $name;
             $param_email = $email;
-            $param_password = password_hash($upassword, PASSWORD_DEFAULT); // Creates a password hash
+            $param_password = password_hash($upassword, PASSWORD_DEFAULT); // hashes the password
             
             // Attempt to execute the prepared statement
             if($stmt->execute()){
                 // Redirect to login page
                 header("location: login.php");
             } else{
-                echo "Oops! Something went wrong. Please try again later.";
+                echo "We must be having problems. Please try again later.";
             }
-
-            // Close statement
             unset($stmt);
         
     }
@@ -115,8 +106,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sign Up</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Register</title>
     <style>
     * {
     box-sizing: border-box;

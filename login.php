@@ -1,9 +1,9 @@
 <?php
-// Initialize the session
+// Start the session
 session_start();
 
  
-// Check if the user is already logged in, if yes then redirect him to welcome page
+// check for previous session, if they are put to post login page
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     header("location: welcome.php");
     exit;
@@ -11,84 +11,84 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
 
 
  
-// Processing form data when form is submitted
+// Check if form submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     $servername = "aa1j2ay19mvo8dl.cew1fvzp06l6.us-east-2.rds.amazonaws.com";
     $username = "cap";
     $password = "capstonedb";
  try {
+  //database connection
   $conn = new PDO("mysql:host=$servername;dbname=ebdb", $username, $password);
   // set the PDO error mode to exception
   $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   $name = $upassword = "";
   $name_err = $upassword_err = $login_err = "";
  
-    // Check if username is empty
+    // check for entered name
     if(empty(trim($_POST["name"]))){
         $name_err = "Please enter username.";
     } else{
         $name = trim($_POST["name"]);
     }
     
-    // Check if password is empty
+    // check for entered password
     if(empty(trim($_POST["upassword"]))){
         $upassword_err = "Please enter your password.";
     } else{
         $upassword = trim($_POST["upassword"]);
     }
     
-    // Validate credentials
+    // Check for errors
     if(empty($name_err) && empty($upassword_err)){
-        // Prepare a select statement
+        // SQL statement
         $sql = "SELECT idusers, name, email, upassword FROM test WHERE name = :name";
         
         if($stmt = $conn->prepare($sql)){
-            // Bind variables to the prepared statement as parameters
             $stmt->bindParam(":name", $param_name, PDO::PARAM_STR);
             
             // Set parameters
             $param_name = trim($_POST["name"]);
             
-            // Attempt to execute the prepared statement
+            // execute sql
             if($stmt->execute()){
-                // Check if username exists, if yes then verify password
+                // check if name in database, then confirm password is correct
                 if($stmt->rowCount() == 1){
                     if($row = $stmt->fetch()){
+                      // get data from database
                         $id = $row["idusers"];
                         $name = $row["name"];
                         $email = $row["email"];
                         $hashed_password = $row["upassword"];
                         if(password_verify($upassword, $hashed_password)){
-                            // Password is correct, so start a new session
+                            //check password matches
                             session_start();
                             
-                            // Store data in session variables
+                            // store db data in session variables
                             $_SESSION["loggedin"] = true;
                             $_SESSION["id"] = $id;
                             $_SESSION["name"] = $name;     
                             $_SESSION["email"] = $email;                       
                             
-                            // Redirect user to welcome page
+                            // go to welcome page
                             header("location: welcome.php");
                         } else{
-                            // Password is not valid, display a generic error message
+                            // issue while logging in
                             $login_err = "Invalid username or password.";
                         }
                     }
                 } else{
-                    // Username doesn't exist, display a generic error message
+                    // issues with name
                     $login_err = "Invalid username or password.";
                 }
             } else{
                 echo "Oops! Something went wrong. Please try again later.";
             }
 
-            // Close statement
+          
             unset($stmt);
         }
     }
     
-    // Close connection
     unset($conn);
 
 
@@ -97,7 +97,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 }
  
-// Define variables and initialize with empty values
 
 ?>
  
@@ -105,8 +104,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Login</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<title>Login</title>
 <style>
  /*body{ font: 14px sans-serif; } */
 .wrapper { 
