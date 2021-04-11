@@ -1,4 +1,4 @@
-# Public Transit System
+# Cloud-based Public Transit System
 
 A simple and easy-to-use website that allows users to create an account, login and easily purchase tickets. 
 This is a cloud-based web application that serves to promote the idea of creating a simple web site.
