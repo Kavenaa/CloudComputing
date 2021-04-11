@@ -18,7 +18,7 @@ $name_err = $upassword_err = $confirm_password_err = $email_err = "";
 //Does on form submission
 if($_SERVER["REQUEST_METHOD"] == "POST"){
  
-    //Check username
+    //Check name
     if(empty(trim($_POST["name"]))){
         $name_err = "Please enter a username.";
     } else{
@@ -52,7 +52,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $upassword = trim($_POST["upassword"]);
     }
     
-    // Confirm the password
+    // password confirmation
     if(empty(trim($_POST["confirm_password"]))){
         $confirm_password_err = "Please confirm password.";     
     } else{
@@ -84,11 +84,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             // Set params to the variables from the form
             $param_name = $name;
             $param_email = $email;
-            $param_password = password_hash($upassword, PASSWORD_DEFAULT); // hashes the password
+            $param_password = password_hash($upassword, PASSWORD_DEFAULT); // Built in php function to hash password
             
-            // Attempt to execute the prepared statement
             if($stmt->execute()){
-                // Redirect to login page
+                // go to login page
                 header("location: login.php");
             } else{
                 echo "We must be having problems. Please try again later.";

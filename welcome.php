@@ -1,9 +1,8 @@
 <?php
-// Initialize the session
 session_start();
  
 // check for user logged in with session
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+if($_SESSION["loggedin"] !== true || !isset($_SESSION["loggedin"])){
     header("location: login.php");
     exit;
 }
